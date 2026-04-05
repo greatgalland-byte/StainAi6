@@ -1,70 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>StainAI Agent</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #1a1a1a;
-      --surface:   #212121;
-      --panel:     #2a2a2a;
-      --border:    #333333;
-      --accent:    #e03535;
-      --accent2:   #ff6b6b;
-      --user-bg:   #e03535;
-      --ai-bg:     #f5f5f0;
-      --ai-text:   #1a1a1a;
-      --text:      #f0f0f0;
-      --muted:     #888888;
-      --send:      #e03535;
+      --bg:         #0e1420;
+      --surface:    #131b28;
+      --panel:      #182030;
+      --border:     #1e2d45;
+      --accent:     #e03535;
+      --accent2:    #ff7070;
+      --user-bg1:   #c92a2a;
+      --user-bg2:   #e84040;
+      --ai-bg:      #f8f5f2;
+      --ai-text:    #1c1c1c;
+      --text:       #dde4f0;
+      --muted:      #6b7a99;
+      --send:       #e03535;
     }
 
-    html, body {
-      height: 100%;
+    html, body { height: 100%; overflow: hidden; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+    /* ── animated gradient background ── */
+    body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Nunito', sans-serif;
-      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 60% at 15% 0%,   #e0353514 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 85% 100%,  #3b5bdb0d 0%, transparent 55%),
+        radial-gradient(ellipse 40% 30% at 50% 50%,   #e0353508 0%, transparent 50%);
     }
 
     .app {
-      display: flex;
-      flex-direction: column;
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column;
       height: 100dvh;
-      max-width: 780px;
-      margin: 0 auto;
-      background: var(--surface);
+      max-width: 800px; margin: 0 auto;
+      background: linear-gradient(180deg, #131b28 0%, #0f1822 100%);
       border-left: 1px solid var(--border);
       border-right: 1px solid var(--border);
-      position: relative;
     }
 
     /* ── header ── */
     .header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 13px 18px;
-      background: var(--panel);
+      display: flex; align-items: center; gap: 13px;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #182030 0%, #1a2438 100%);
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
-      position: relative;
-      z-index: 10;
+      position: relative; z-index: 10;
+      box-shadow: 0 2px 20px #00000033;
     }
 
+    /* Logo */
     .logo {
-      width: 42px; height: 42px;
-      flex-shrink: 0;
-      border-radius: 50%;
-      background: linear-gradient(145deg, #e03535, #ff6b6b);
-      box-shadow: 0 2px 12px #e0353555;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 44px; height: 44px; flex-shrink: 0;
+      border-radius: 14px;
+      background: linear-gradient(145deg, #c92a2a, #e84040, #ff7070);
+      box-shadow: 0 4px 16px #e0353540, 0 0 0 1px #e0353520;
+      display: flex; align-items: center; justify-content: center;
     }
     .logo svg { width: 24px; height: 24px; }
 
@@ -72,183 +76,111 @@
 
     .header-name {
       font-family: 'Pacifico', cursive;
-      font-size: 1.1rem;
-      color: #fff;
-      text-shadow: 0 1px 6px #e0353544;
+      font-size: 1.1rem; color: #fff;
+      background: linear-gradient(135deg, #fff 30%, #ffaaaa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .header-status {
-      font-size: 0.7rem;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      margin-top: 2px;
+      display: flex; align-items: center; gap: 5px;
+      font-size: 0.69rem; color: var(--muted); margin-top: 2px;
     }
 
     .status-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: #4ade80;
-      box-shadow: 0 0 6px #4ade8099;
-      animation: pulse 2s infinite;
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #4ade80; box-shadow: 0 0 7px #4ade8099;
+      animation: pulse 2.5s infinite;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.35; }
-    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-    /* ── hamburger ── */
-    .menu-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 7px 6px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      border-radius: 8px;
-      transition: background 0.2s;
+    /* ── contact pill ── */
+    .contact-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px;
+      background: linear-gradient(135deg, #c92a2a, #e84040);
+      border: none; border-radius: 22px;
+      color: #fff; font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.78rem; font-weight: 700;
+      cursor: pointer; text-decoration: none;
+      box-shadow: 0 2px 12px #e0353540;
+      transition: transform 0.15s, box-shadow 0.2s;
+      white-space: nowrap;
     }
-    .menu-btn:hover { background: #ffffff11; }
-    .menu-btn span {
-      display: block;
-      width: 22px; height: 2px;
-      background: var(--text);
-      border-radius: 2px;
-    }
-
-    /* ── dropdown ── */
-    .dropdown {
-      position: absolute;
-      top: 66px;
-      right: 14px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
-      min-width: 190px;
-      box-shadow: 0 8px 32px #00000066;
-      z-index: 100;
-      transform-origin: top right;
-      transform: scale(0.88);
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .dropdown.open {
-      transform: scale(1);
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    .dropdown-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 13px 18px;
-      color: var(--text);
-      text-decoration: none;
-      font-size: 0.88rem;
-      font-weight: 600;
-      font-family: 'Nunito', sans-serif;
-      transition: background 0.15s;
-      cursor: pointer;
-      border: none;
-      background: none;
-      width: 100%;
-    }
-    .dropdown-item:hover { background: #ffffff0d; }
-    .dropdown-divider { height: 1px; background: var(--border); }
-
-    /* ── overlay ── */
-    .overlay {
-      position: fixed; inset: 0;
-      z-index: 50; display: none;
-    }
-    .overlay.active { display: block; }
+    .contact-btn:hover { transform: scale(1.05); box-shadow: 0 4px 18px #e0353560; }
+    .contact-btn:active { transform: scale(0.97); }
 
     /* ── messages ── */
     .messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
+      flex: 1; overflow-y: auto;
+      padding: 18px 16px;
+      display: flex; flex-direction: column; gap: 3px;
       scroll-behavior: smooth;
     }
     .messages::-webkit-scrollbar { width: 3px; }
     .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-    /* ── welcome ── */
+    /* ── welcome screen ── */
     .welcome {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-      gap: 14px;
-      padding: 40px 20px;
-      text-align: center;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      flex: 1; gap: 16px;
+      padding: 40px 24px; text-align: center;
       animation: fadeUp 0.5s ease;
     }
 
     .welcome-logo {
-      width: 82px; height: 82px;
-      border-radius: 50%;
-      background: linear-gradient(145deg, #e03535, #ff6b6b);
-      box-shadow: 0 4px 28px #e0353566;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 2px;
+      width: 84px; height: 84px; border-radius: 26px;
+      background: linear-gradient(145deg, #c92a2a, #e84040, #ff7070);
+      box-shadow: 0 8px 32px #e0353550, 0 0 0 1px #e0353525;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 4px;
+      animation: floatLogo 3s ease-in-out infinite;
     }
     .welcome-logo svg { width: 46px; height: 46px; }
 
+    @keyframes floatLogo {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
     .welcome h2 {
       font-family: 'Pacifico', cursive;
-      font-size: 1.85rem;
-      color: #fff;
-      text-shadow: 0 2px 10px #e0353533;
+      font-size: 2rem; color: #fff;
+      background: linear-gradient(135deg, #fff 20%, #ffbbbb 80%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .welcome p {
-      color: var(--muted);
-      font-size: 0.87rem;
-      max-width: 300px;
-      line-height: 1.65;
-      font-weight: 500;
+      color: var(--muted); font-size: 0.88rem;
+      max-width: 300px; line-height: 1.7; font-weight: 500;
     }
 
     .suggestions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      justify-content: center;
-      margin-top: 4px;
+      display: flex; flex-wrap: wrap; gap: 8px;
+      justify-content: center; margin-top: 6px;
     }
 
     .suggestion {
-      background: var(--panel);
+      background: linear-gradient(135deg, #182030, #1e2d45);
       border: 1px solid var(--border);
-      color: var(--text);
-      font-family: 'Nunito', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 600;
-      padding: 7px 14px;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: all 0.18s;
+      color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.78rem; font-weight: 600;
+      padding: 8px 15px; border-radius: 22px;
+      cursor: pointer; transition: all 0.2s;
     }
-    .suggestion:hover { border-color: var(--accent); color: var(--accent2); background: #e0353511; }
+    .suggestion:hover {
+      border-color: var(--accent);
+      color: var(--accent2);
+      background: linear-gradient(135deg, #1e2030, #2a1818);
+      box-shadow: 0 2px 12px #e0353520;
+    }
 
-    /* ── iOS bubble rows ── */
+    /* ── iOS-style bubbles ── */
     .msg-row {
-      display: flex;
-      align-items: flex-end;
-      gap: 6px;
+      display: flex; align-items: flex-end; gap: 7px;
       animation: fadeUp 0.2s ease;
     }
     .msg-row.user { flex-direction: row-reverse; }
@@ -257,150 +189,140 @@
     .msg-row.user + .msg-row.ai { margin-top: 10px; }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(9px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
     .avatar {
-      width: 28px; height: 28px;
-      border-radius: 50%;
+      width: 28px; height: 28px; border-radius: 50%;
       flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.62rem;
-      font-weight: 700;
-      margin-bottom: 2px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.62rem; font-weight: 700; margin-bottom: 2px;
     }
-    .avatar.ai-avatar { background: linear-gradient(145deg, #e03535, #ff6b6b); }
+    .avatar.ai-avatar {
+      background: linear-gradient(145deg, #c92a2a, #e84040);
+      box-shadow: 0 2px 8px #e0353530;
+    }
     .avatar.user-avatar { background: var(--border); color: var(--muted); }
 
-    /* iOS-style tails */
     .bubble {
-      max-width: 75%;
-      padding: 9px 13px;
-      font-size: 0.91rem;
-      line-height: 1.5;
-      word-break: break-word;
-      white-space: pre-wrap;
-      font-weight: 500;
+      max-width: 74%; padding: 10px 14px;
+      font-size: 0.91rem; line-height: 1.55;
+      word-break: break-word; white-space: pre-wrap; font-weight: 500;
     }
 
+    /* User — warm red gradient, tail bottom-right */
     .msg-row.user .bubble {
-      background: var(--user-bg);
+      background: linear-gradient(135deg, var(--user-bg1), var(--user-bg2));
       color: #fff;
       border-radius: 20px 20px 5px 20px;
-      box-shadow: 0 1px 5px #e0353533;
+      box-shadow: 0 2px 12px #e0353530;
     }
 
+    /* AI — warm off-white, tail bottom-left */
     .msg-row.ai .bubble {
       background: var(--ai-bg);
       color: var(--ai-text);
       border-radius: 20px 20px 20px 5px;
-      box-shadow: 0 1px 4px #00000022;
+      box-shadow: 0 2px 10px #00000025;
     }
 
     .bubble .time {
-      display: block;
-      font-size: 0.61rem;
-      margin-top: 4px;
-      opacity: 0.45;
-      text-align: right;
-      font-weight: 400;
+      display: block; font-size: 0.61rem;
+      margin-top: 5px; opacity: 0.45;
+      text-align: right; font-weight: 400;
     }
+    .msg-row.user .bubble .time { opacity: 0.6; color: #ffd0d0; }
 
-    /* ── typing ── */
+    /* ── typing dots ── */
     .typing-bubble {
       background: var(--ai-bg);
       border-radius: 20px 20px 20px 5px;
-      padding: 12px 16px;
-      display: flex;
-      gap: 5px;
-      align-items: center;
-      box-shadow: 0 1px 4px #00000022;
+      padding: 13px 17px;
+      display: flex; gap: 5px; align-items: center;
+      box-shadow: 0 2px 10px #00000025;
     }
     .typing-bubble span {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: #aaa;
-      animation: bounce 1.2s infinite;
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #bbb; animation: bounce 1.2s infinite;
     }
     .typing-bubble span:nth-child(2) { animation-delay: 0.18s; }
     .typing-bubble span:nth-child(3) { animation-delay: 0.36s; }
 
     @keyframes bounce {
-      0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+      0%,60%,100% { transform: translateY(0); opacity: 0.3; }
       30% { transform: translateY(-5px); opacity: 1; }
     }
 
-    /* ── input ── */
+    /* ── rate limit bubble ── */
+    .rate-bubble {
+      background: linear-gradient(135deg, #2a1515, #221a1a);
+      border: 1px solid #e0353540;
+      border-radius: 20px 20px 20px 5px;
+      padding: 11px 15px;
+      font-size: 0.87rem; font-weight: 600; color: #ff9999;
+      box-shadow: 0 2px 12px #e0353520;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .rate-bubble .countdown { font-weight: 700; color: #ff6b6b; min-width: 26px; text-align: center; }
+    .input-row.locked { border-color: #e0353540 !important; opacity: 0.5; }
+    textarea:disabled { cursor: not-allowed; }
+
+    /* ── input area ── */
     .input-area {
-      padding: 10px 14px 14px;
-      background: var(--panel);
+      padding: 11px 16px 16px;
+      background: linear-gradient(180deg, #182030 0%, #131b28 100%);
       border-top: 1px solid var(--border);
       flex-shrink: 0;
     }
 
     .input-row {
-      display: flex;
-      align-items: flex-end;
-      gap: 10px;
-      background: var(--bg);
+      display: flex; align-items: flex-end; gap: 10px;
+      background: #0e1420;
       border: 1.5px solid var(--border);
-      border-radius: 26px;
-      padding: 8px 8px 8px 16px;
-      transition: border-color 0.2s;
+      border-radius: 28px;
+      padding: 8px 8px 8px 17px;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .input-row:focus-within { border-color: var(--accent); }
+    .input-row:focus-within {
+      border-color: #e0353560;
+      box-shadow: 0 0 0 3px #e0353515;
+    }
 
     textarea {
-      flex: 1;
-      background: none;
-      border: none;
-      outline: none;
-      color: var(--text);
-      font-family: 'Nunito', sans-serif;
-      font-size: 0.92rem;
-      font-weight: 500;
-      resize: none;
-      max-height: 120px;
-      line-height: 1.5;
-      padding: 4px 0;
+      flex: 1; background: none; border: none; outline: none;
+      color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.92rem; font-weight: 500;
+      resize: none; max-height: 120px;
+      line-height: 1.5; padding: 5px 0;
     }
     textarea::placeholder { color: var(--muted); }
 
     .send-btn {
-      width: 38px; height: 38px;
-      border-radius: 50%;
-      background: var(--send);
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, #c92a2a, #e84040);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
-      transition: transform 0.15s, background 0.2s;
-      box-shadow: 0 2px 8px #e0353544;
+      transition: transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 3px 12px #e0353545;
     }
-    .send-btn:hover { transform: scale(1.08); background: var(--accent2); }
-    .send-btn:active { transform: scale(0.94); }
+    .send-btn:hover { transform: scale(1.08); box-shadow: 0 4px 18px #e0353560; }
+    .send-btn:active { transform: scale(0.93); }
     .send-btn:disabled { background: var(--border); cursor: not-allowed; transform: none; box-shadow: none; }
     .send-btn svg { width: 17px; height: 17px; fill: #fff; }
 
     .footer-note {
-      text-align: center;
-      font-size: 0.63rem;
-      color: var(--muted);
-      margin-top: 7px;
-      font-weight: 500;
+      text-align: center; font-size: 0.63rem;
+      color: var(--muted); margin-top: 8px; font-weight: 500;
     }
     .footer-note a { color: var(--accent2); text-decoration: none; }
+    .footer-note a:hover { color: #fff; }
   </style>
 </head>
 <body>
 <div class="app">
 
-  <div class="overlay" id="overlay" onclick="closeMenu()"></div>
 
   <!-- Header -->
   <div class="header">
@@ -413,21 +335,12 @@
       <div class="header-name">StainAI Agent</div>
       <div class="header-status">
         <span class="status-dot"></span>
-        <span>Online · Powered by OpenRouter</span>
+        <span>Online · Powered by Groq</span>
       </div>
     </div>
-    <button class="menu-btn" onclick="toggleMenu()" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
-    <div class="dropdown" id="dropdown">
-      <button class="dropdown-item" onclick="clearChat(); closeMenu()">
-        <span>🧹</span> Clear Chat
-      </button>
-      <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="https://linktr.ee/iamevanss" target="_blank" onclick="closeMenu()">
-        <span>🔗</span> Contact Stain
-      </a>
-    </div>
+    <a class="contact-btn" href="https://linktr.ee/iamevanss" target="_blank" rel="noopener noreferrer">
+      🔗 Contact
+    </a>
   </div>
 
   <!-- Messages -->
@@ -435,11 +348,11 @@
     <div class="welcome" id="welcome">
       <div class="welcome-logo">
         <svg viewBox="0 0 24 24" fill="none">
-          <path d="M7 9C7 7.3 8.5 6 10.5 6H14C15.7 6 17 7.3 17 9C17 10.7 15.7 12 14 12H10C8.3 12 7 13.3 7 15C7 16.7 8.3 18 10 18H13.5C15.2 18 17 16.8 17 15" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M7 9C7 7.3 8.5 6 10.5 6H14C15.7 6 17 7.3 17 9C17 10.7 15.7 12 14 12H10C8.3 12 7 13.3 7 15C7 16.7 8.3 18 10 18H13.5C15.2 18 17 16.8 17 15" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
         </svg>
       </div>
       <h2>StainAI Agent</h2>
-      <p>Your intelligent AI assistant. Ask me anything — I keep track of our conversation.</p>
+      <p>Your intelligent AI assistant. Ask me anything — I keep track of our conversation as we go.</p>
       <div class="suggestions">
         <button class="suggestion" onclick="sendSuggestion(this)">✍️ Write me a poem</button>
         <button class="suggestion" onclick="sendSuggestion(this)">💡 Explain quantum physics simply</button>
@@ -451,7 +364,7 @@
 
   <!-- Input -->
   <div class="input-area">
-    <div class="input-row">
+    <div class="input-row" id="inputRow">
       <textarea id="input" placeholder="Message StainAI..." rows="1"
         onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
       <button class="send-btn" id="sendBtn" onclick="sendMessage()">
@@ -465,13 +378,16 @@
 
 </div>
 <script>
-  let history = [], isTyping = false;
+  let history = [], isTyping = false, rateLimitTimer = null;
   const messagesEl = document.getElementById("messages");
-  const inputEl = document.getElementById("input");
-  const sendBtn = document.getElementById("sendBtn");
+  const inputEl    = document.getElementById("input");
+  const sendBtn    = document.getElementById("sendBtn");
+  const inputRow   = document.getElementById("inputRow");
 
   const getWelcome = () => document.getElementById("welcome");
-  const getTime = () => new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const getTime    = () => new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+  const S_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 9C7 7.3 8.5 6 10.5 6H14C15.7 6 17 7.3 17 9C17 10.7 15.7 12 14 12H10C8.3 12 7 13.3 7 15C7 16.7 8.3 18 10 18H13.5C15.2 18 17 16.8 17 15" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>`;
 
   function autoResize(el) {
     el.style.height = "auto";
@@ -487,21 +403,45 @@
     sendMessage();
   }
 
-  function toggleMenu() {
-    document.getElementById("dropdown").classList.toggle("open");
-    document.getElementById("overlay").classList.toggle("active");
-  }
-
-  function closeMenu() {
-    document.getElementById("dropdown").classList.remove("open");
-    document.getElementById("overlay").classList.remove("active");
-  }
-
   function escapeHtml(t) {
     return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   }
 
-  const S_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 9C7 7.3 8.5 6 10.5 6H14C15.7 6 17 7.3 17 9C17 10.7 15.7 12 14 12H10C8.3 12 7 13.3 7 15C7 16.7 8.3 18 10 18H13.5C15.2 18 17 16.8 17 15" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>`;
+  function lockInput() {
+    inputEl.disabled = true; sendBtn.disabled = true;
+    inputRow.classList.add("locked");
+  }
+
+  function unlockInput() {
+    inputEl.disabled = false; sendBtn.disabled = false;
+    inputRow.classList.remove("locked"); inputEl.focus();
+  }
+
+  function showRateLimit(onDone) {
+    const w = getWelcome(); if (w) w.remove();
+    const row = document.createElement("div");
+    row.className = "msg-row ai"; row.id = "rate-row";
+    const av = document.createElement("div");
+    av.className = "avatar ai-avatar"; av.innerHTML = S_ICON;
+    const bub = document.createElement("div");
+    bub.className = "rate-bubble";
+    bub.innerHTML = `⏳ Rate limit reached. Retrying in <span class="countdown" id="cd">60</span>s`;
+    row.appendChild(av); row.appendChild(bub);
+    messagesEl.appendChild(row);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    lockInput();
+    let secs = 60;
+    rateLimitTimer = setInterval(() => {
+      secs--;
+      const cd = document.getElementById("cd");
+      if (cd) cd.textContent = secs;
+      if (secs <= 0) {
+        clearInterval(rateLimitTimer); rateLimitTimer = null;
+        const r = document.getElementById("rate-row"); if (r) r.remove();
+        unlockInput(); if (onDone) onDone();
+      }
+    }, 1000);
+  }
 
   function appendBubble(role, text) {
     const w = getWelcome(); if (w) w.remove();
@@ -536,13 +476,15 @@
     const t = document.getElementById("typing-row"); if (t) t.remove();
   }
 
-  async function sendMessage() {
-    const text = inputEl.value.trim();
-    if (!text || isTyping) return;
+  async function sendMessage(retryText) {
+    const text = retryText || inputEl.value.trim();
+    if (!text || isTyping || rateLimitTimer) return;
     isTyping = true; sendBtn.disabled = true;
-    inputEl.value = ""; inputEl.style.height = "auto";
-    appendBubble("user", text);
-    history.push({ role: "user", content: text });
+    if (!retryText) {
+      inputEl.value = ""; inputEl.style.height = "auto";
+      appendBubble("user", text);
+      history.push({ role: "user", content: text });
+    }
     showTyping();
     try {
       const res = await fetch("/chat", {
@@ -552,6 +494,11 @@
       });
       const data = await res.json();
       removeTyping();
+      if (res.status === 429) {
+        isTyping = false;
+        showRateLimit(() => sendMessage(text));
+        return;
+      }
       if (data.error) {
         appendBubble("ai", "⚠️ " + data.error);
       } else {
@@ -563,18 +510,22 @@
       removeTyping();
       appendBubble("ai", "⚠️ Could not reach the server. Please try again.");
     }
-    isTyping = false; sendBtn.disabled = false; inputEl.focus();
+    isTyping = false;
+    if (!rateLimitTimer) { sendBtn.disabled = false; inputEl.focus(); }
   }
 
   function clearChat() {
-    history = [];
+    if (rateLimitTimer) { clearInterval(rateLimitTimer); rateLimitTimer = null; }
+    unlockInput(); history = [];
     messagesEl.innerHTML = `
       <div class="welcome" id="welcome">
         <div class="welcome-logo">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M7 9C7 7.3 8.5 6 10.5 6H14C15.7 6 17 7.3 17 9C17 10.7 15.7 12 14 12H10C8.3 12 7 13.3 7 15C7 16.7 8.3 18 10 18H13.5C15.2 18 17 16.8 17 15" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M7 9C7 7.3 8.5 6 10.5 6H14C15.7 6 17 7.3 17 9C17 10.7 15.7 12 14 12H10C8.3 12 7 13.3 7 15C7 16.7 8.3 18 10 18H13.5C15.2 18 17 16.8 17 15" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
         </div>
         <h2>StainAI Agent</h2>
-        <p>Your intelligent AI assistant. Ask me anything — I keep track of our conversation.</p>
+        <p>Your intelligent AI assistant. Ask me anything — I keep track of our conversation as we go.</p>
         <div class="suggestions">
           <button class="suggestion" onclick="sendSuggestion(this)">✍️ Write me a poem</button>
           <button class="suggestion" onclick="sendSuggestion(this)">💡 Explain quantum physics simply</button>
@@ -587,5 +538,4 @@
   inputEl.focus();
 </script>
 </body>
-  </html>
-  
+</html>
